@@ -9,19 +9,32 @@ import pkg2dgamesframework.GameScreen;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 
 import com.microsoft.sqlserver.jdbc.spatialdatatypes.Point;
+
+import DBConnect.DBConnect;
+import Interface.SignIn;
 
 import java.awt.Color;
 
 
 public class FlappyBird extends GameScreen {
-
+	private String username = SignIn.usernameField.getText();
     private BufferedImage birds;
     private Animation bird_anim;
     private BufferedImage chimneys;
-
+    DBConnect con = new DBConnect();
+    
+    private int highScore = con.getScoreBird(username);
+    
+    
 
     public static float g = 0.17f;
 
@@ -38,7 +51,11 @@ public class FlappyBird extends GameScreen {
     private int Point = 0;
 
     public FlappyBird() {
+    	
         super(800, 600);
+        
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         try {
             birds = ImageIO.read(new File("access/bird_sprite.png"));
@@ -72,6 +89,7 @@ public class FlappyBird extends GameScreen {
         bird.setVt(0);
         bird.setAlive(true);
         Point = 0;
+        highScore = con.getScoreBird(username);
         chimneyGroup.reset();
     }
 
@@ -107,15 +125,34 @@ public class FlappyBird extends GameScreen {
                     bird.pointSound.play();
                     chimneyGroup.getChimney(i).setIsBehindBird(true);
                 }
-
             }
-
             if(bird.getPosY() + bird.getH() > ground.getYGround()) {
-                CurrentScreen = GAMEOVER_SCREEN;
+                CurrentScreen = GAMEOVER_SCREEN;  	
+                
+                con = new DBConnect();
+                try {
+                	
+					Connection conn = con.getConnect();
+					
+					PreparedStatement sttm = null;
+					
+					String sql = "update account set scoreBird=? where username=?";
+					
+					if(Point > con.getScoreBird(username)) {
+						sttm = conn.prepareStatement(sql);
+						sttm.setInt(1, Point);
+						sttm.setString(2, username);
+						sttm.executeUpdate();
+					}
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 
             }
-
-
         }
     }
 
@@ -128,8 +165,6 @@ public class FlappyBird extends GameScreen {
         chimneyGroup.pain(g2);
         ground.Paint(g2);
 
-
-
         if(bird.getIsFlying()) 
            bird_anim.PaintAnims((int) bird.getPosX() , (int) bird.getPosY(), birds, g2, 0, -0.45);
         else if(bird.getIsFlying() == false)
@@ -141,25 +176,31 @@ public class FlappyBird extends GameScreen {
 
         if(CurrentScreen == BEGIN_SCREEN) {
 
-            g2.setColor(Color.red);
-            g2.drawString("Press Space to Start", 300, 300);
+        	g2.setColor(Color.red);
+            g2.setFont(g2.getFont().deriveFont(18.0f));
+            g2.drawString("PRESS SPACE TO PLAY GAME!", 250, 400);
 
         } 
         if(CurrentScreen == GAMEOVER_SCREEN) {
 
             g2.setColor(Color.red);
-            g2.drawString("Press Space to Back", 300, 300);
+            g2.setFont(g2.getFont().deriveFont(18.0f));
+            g2.drawString("PRESS SPACE TO BACK", 300, 300);
 
         }
+        g2.setFont(g2.getFont().deriveFont(18.0f));
         g2.setColor(Color.red);
         g2.drawString("Point: " + Point, 20, 50);
+ 
+        
+       g2.drawString("High Score: " + highScore, 20, 70);
 
     }
        
 
     @Override
     public void KEY_ACTION(KeyEvent e, int Event) {
-        if(Event == KEY_PRESSED)   {
+        if(e.getKeyCode() == KeyEvent.VK_SPACE)   {
 
             if(CurrentScreen == BEGIN_SCREEN) {
 
@@ -171,12 +212,13 @@ public class FlappyBird extends GameScreen {
 
             } else if(CurrentScreen == GAMEPLAY_SCREEN) {
 
-                if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP)
-                if(bird.getAlive()) bird.fly();
-
+                if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP) {
+                	if(bird.getAlive()) {
+                		bird.fly();
+                	}
+                }           
             }         
         }
     }
-    
 }
  

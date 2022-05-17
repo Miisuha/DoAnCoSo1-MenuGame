@@ -86,7 +86,7 @@ public class SignUp extends JFrame {
 					try {
 						Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 						Connection con = DriverManager.getConnection(
-								"jdbc:sqlserver://Miisu:1433;databaseName=KaraokeSongList;integratedSecurity=true",
+								"jdbc:sqlserver://Miisu:1433;databaseName=GameDACS1;integratedSecurity=true",
 								"sa", "Hiepbgbg1");
 
 						PreparedStatement sttm = null;
@@ -104,11 +104,11 @@ public class SignUp extends JFrame {
 								try {
 									Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 									Connection conn = DriverManager.getConnection(
-											"jdbc:sqlserver://Miisu:1433;databaseName=KaraokeSongList;integratedSecurity=true",
+											"jdbc:sqlserver://Miisu:1433;databaseName=GameDACS1;integratedSecurity=true",
 											"sa", "30062018");
 									java.sql.Statement sttmm = conn.createStatement();
 
-									String ssql = "use KaraokeSongList;" + "CREATE TABLE " + tableName
+									String ssql = "use GameDACS1;" + "CREATE TABLE " + tableName
 											+ "(playlistName NVARCHAR(50) NOT NULL PRIMARY KEY, " + ")";
 
 									sttmm.executeUpdate(ssql);

@@ -107,7 +107,7 @@ public class SignIn extends JFrame {
 		});
 		label.setBounds(-59, -18, 441, 508);
 		label.setVerticalAlignment(SwingConstants.TOP);
-		label.setIcon(new ImageIcon(SignUp.class.getResource("/images/bg.jpg")));
+		//label.setIcon(new ImageIcon(SignUp.class.getResource("/images/bg.jpg")));
 		panel.add(label);
 
 		Button buttonUp = new Button("SignUp");
@@ -165,7 +165,7 @@ public class SignIn extends JFrame {
 
 					Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 					Connection con = DriverManager.getConnection(
-							"jdbc:sqlserver://Miisu:1433;databaseName=KaraokeSongList;integratedSecurity=true", "sa",
+							"jdbc:sqlserver://Miisu:1433;databaseName=GameDACS1;integratedSecurity=true", "sa",
 							"Hiepbgbg1");
 
 					Statement sttm = con.createStatement();
