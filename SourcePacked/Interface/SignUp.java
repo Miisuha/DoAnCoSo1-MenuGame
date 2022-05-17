@@ -76,7 +76,7 @@ public class SignUp extends JFrame {
 		});
 		label.setBounds(-59, -18, 441, 508);
 		label.setVerticalAlignment(SwingConstants.TOP);
-		label.setIcon(new ImageIcon(SignUp.class.getResource("/images/bg.jpg")));
+		//label.setIcon(new ImageIcon(SignUp.class.getResource("/images/bg.jpg")));
 		panel.add(label);
 
 		Button buttonUp = new Button("SignUp");
